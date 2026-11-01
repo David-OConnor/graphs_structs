@@ -85,8 +85,8 @@ pub enum SokobanStep {
 
 impl Transformable for SokobanEx0 {
     type Context = SokobanContext;
-    type Invalid = MoveValidity;
     type Step = SokobanStep;
+    type Invalid = MoveValidity;
 
     fn steps(&self, ctx: &Self::Context) -> Vec<Self::Step> {
         use Direction::{Down, Left, Right, Up};

@@ -1,5 +1,7 @@
 mod ex_sinking_star;
 mod graph;
+mod mol_dynamics;
+mod chem;
 
 use std::hash::Hash;
 
@@ -12,12 +14,14 @@ use crate::{
 // struct TransformationRule {}
 
 /// Will this become the core part of this project?
-pub trait Transformable: Clone + Eq + Hash {
+// pub trait Transformable: Clone + Eq + Hash {
+pub trait Transformable: Clone {
     // /// Enum rule for returning if a result was valid, or what the result was.
     // type Validity;
 
-    // todo: What is this?
-    type Context; // static level data; `()` for systems that don't need it
+    /// Static data; doesn't transform that's part of the implementing struct.
+    /// Use `()` for systems that don't need it.
+    type Context;
 
     /// Describes a single transformation step.
     type Step: Clone;
@@ -30,7 +34,6 @@ pub trait Transformable: Clone + Eq + Hash {
     fn instances(ctx: &Self::Context) -> Vec<Self>;
 
     /// Applies one step, or reports why it is invalid.
-    // todo this sized trait??
     fn transform(&self, step: &Self::Step, ctx: &Self::Context) -> Result<Self, Self::Invalid>
     where
         Self: Sized;
@@ -74,8 +77,9 @@ fn main() {
         grid_size: (5, 5),
         grid_water_tiles: Vec::new(),
     };
-    let connected = Graph::build(AllOrConnected::ConnectedOnly(state_0.clone()), &ctx);
-    let all = Graph::<SokobanEx0>::build(AllOrConnected::AllPossibleInstances, &ctx);
+
+    let graph = Graph::build(AllOrConnected::ConnectedOnly(state_0.clone()), &ctx);
+    let graph_all = Graph::<SokobanEx0>::build(AllOrConnected::AllPossibleInstances, &ctx);
 
     for (from, to) in [
         (&state_0, &state_1),
@@ -87,11 +91,11 @@ fn main() {
         (&state_0, &state_5),
         (&state_4, &state_5),
     ] {
-        let step = all
+        let step = graph_all
             .edges
             .iter()
             .find(|edge| {
-                all.vertices[edge.from].instance == *from && all.vertices[edge.to].instance == *to
+                graph_all.vertices[edge.from].instance == *from && graph_all.vertices[edge.to].instance == *to
             })
             .map(|edge| &edge.step);
 
@@ -100,12 +104,12 @@ fn main() {
 
     println!(
         "Reachable: {} states, {} steps",
-        connected.vertices.len(),
-        connected.edges.len()
+        graph.vertices.len(),
+        graph.edges.len()
     );
     println!(
         "All: {} states, {} steps",
-        all.vertices.len(),
-        all.edges.len()
+        graph_all.vertices.len(),
+        graph_all.edges.len()
     );
 }

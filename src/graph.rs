@@ -32,6 +32,7 @@ impl<T: Transformable> Graph<T> {
             vertices: Vec::new(),
             edges: Vec::new(),
         };
+
         let mut indices = HashMap::new();
         let initial = match all {
             AllOrConnected::ConnectedOnly(start) => vec![start],
