@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, hash::Hash};
 
 use crate::Transformable;
 
@@ -22,7 +22,7 @@ pub struct Graph<T: Transformable> {
     pub edges: Vec<Edge<T::Step>>,
 }
 
-impl<T: Transformable> Graph<T> {
+impl<T: Transformable + Eq + Hash> Graph<T> {
     /// `all` determines if we only create vertices that are connected to a starting one, or if we
     /// include all possible instances. (Warning: For instances which include non-discrete values,
     /// the latter may not be viable due to having an astounding number of values for a given field,
