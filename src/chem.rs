@@ -5,18 +5,31 @@
 
 use crate::Transformable;
 
+#[derive(Clone, Copy, PartialEq)]
+enum EnergyLevel {
+    Ground,
+    _1,
+    _2,
+    _3,
+}
+
+
+
 // todo: import from mol_defs?
 #[derive(Clone)]
 pub struct Atom {
     num_protons: usize,
     num_neutrons: usize,
     num_electrons: usize,
+    /// Len = num_electrons
+    elec_energy_levels: Vec<EnergyLevel>,
 }
 
 // todo: import from mol_defs?
 #[derive(Clone)]
 pub struct DiatomicMol {
-
+    atom_0: Atom,
+    atm_1: Atom,
 }
 
 impl Transformable for Atom {

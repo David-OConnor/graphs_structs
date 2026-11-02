@@ -6,4 +6,4 @@ edition = "2024"
 [dependencies]
 lin_alg = "1.4.3"
 
-mol_defs = { path = "../../Bio/mol_defs" }
+#mol_defs = { path = "../../Bio/mol_defs" }
