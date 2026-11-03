@@ -2,8 +2,8 @@
 //! units; bohr. After Helgaker, Jørgensen & Olsen, ch. 9.
 
 use std::f64::consts::PI;
-
-use super::{Element, Integrals, indices};
+use crate::chem::determinant::Integrals;
+use super::{Element, indices};
 
 /// Contraction coefficients; the same for every element.
 const C_1S: [f64; 3] = [0.154_328_97, 0.535_328_14, 0.444_634_54];

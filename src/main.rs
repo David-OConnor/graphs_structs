@@ -1,7 +1,7 @@
+mod chem;
 mod ex_sinking_star;
 mod graph;
 mod mol_dynamics;
-mod chem;
 
 use std::hash::Hash;
 
@@ -95,7 +95,8 @@ fn main() {
             .edges
             .iter()
             .find(|edge| {
-                graph_all.vertices[edge.from].instance == *from && graph_all.vertices[edge.to].instance == *to
+                graph_all.vertices[edge.from].instance == *from
+                    && graph_all.vertices[edge.to].instance == *to
             })
             .map(|edge| &edge.step);
 

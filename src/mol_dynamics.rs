@@ -3,6 +3,7 @@
 
 // use mol_defs::molecules::common::MoleculeCommon;
 use lin_alg::f32::Vec3;
+
 use crate::Transformable;
 
 // todo: import from mol_defs?
@@ -10,7 +11,7 @@ use crate::Transformable;
 #[derive(Clone)]
 struct MolCtx {
     atoms: Vec<Vec3>,
-    bonds: Vec<(usize, usize)>
+    bonds: Vec<(usize, usize)>,
 }
 
 // todo: multi-mol System instead of the mol?
@@ -21,13 +22,9 @@ struct MolConformation {
 }
 
 #[derive(Clone)]
-struct MolStep {
+struct MolStep {}
 
-}
-
-enum MolInvalid {
-
-}
+enum MolInvalid {}
 
 impl Transformable for MolConformation {
     type Context = MolCtx;
@@ -44,7 +41,7 @@ impl Transformable for MolConformation {
 
     fn transform(&self, step: &Self::Step, ctx: &Self::Context) -> Result<Self, Self::Invalid>
     where
-        Self: Sized
+        Self: Sized,
     {
         todo!()
     }
