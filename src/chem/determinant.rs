@@ -1,3 +1,5 @@
+//! Slater determinants.
+
 use DeterminantStep::*;
 
 use crate::{
@@ -36,14 +38,14 @@ pub enum DeterminantStep {
 /// Ms = 0.
 /// Dets aren't spin eigenstates; CSFs are (GUGA's Shavitt graph enumerates those).
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct Determinant {
+pub struct SlaterDeterminant {
     /// Bit 2k: orbital k, up. Bit 2k + 1: down.
     pub occ: u64,
     /// Index into `DeterminantCtx::r_grid`.
     pub r: u8,
 }
 
-impl Determinant {
+impl SlaterDeterminant {
     pub fn n_elec(self) -> u8 {
         self.occ.count_ones() as u8
     }
@@ -76,6 +78,7 @@ impl Determinant {
     /// weight. Zero across r bins or electron counts. None without integrals.
     pub fn hamiltonian(self, other: Self, ctx: &DeterminantCtx) -> Option<f64> {
         let ints = ctx.integrals.get(usize::from(self.r))?;
+
         if self.r != other.r || self.n_elec() != other.n_elec() {
             return Some(0.);
         }
@@ -126,7 +129,7 @@ impl Determinant {
     }
 }
 
-impl Transformable for Determinant {
+impl Transformable for SlaterDeterminant {
     type Context = DeterminantCtx;
     type Step = DeterminantStep;
     type Invalid = Forbidden;

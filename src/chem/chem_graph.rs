@@ -1,3 +1,7 @@
+//! Similar to the mol and node graphs we use in classical molecule representations. May be too
+//! high level for what we're going for? And/or may provide insights to those applications,
+//! even if outside of this project's more ambitious scope.
+
 use crate::{
     Transformable,
     chem::{AtomNode, BondEdge, BondOrbital, Forbidden, Hybrid, Spin},

@@ -12,7 +12,7 @@ mod sto3g;
 
 use std::f64::consts::TAU;
 
-use determinant::{Determinant, DeterminantCtx};
+use determinant::{SlaterDeterminant, DeterminantCtx};
 use spectro_state::SpectroState;
 
 use crate::{Transformable, graph::Graph};
@@ -262,7 +262,7 @@ pub struct Eigenstate {
 /// Blocks are connected components over nonzero-weight edges; these split r, charge, Ms and
 /// spatial symmetry with no labels. Each is diagonalized densely: fine for H2, not C2.
 /// Missing vertices give truncated CI; energies are then upper bounds.
-pub fn eigenstates(graph: &Graph<Determinant>, ctx: &DeterminantCtx) -> Option<Vec<Eigenstate>> {
+pub fn eigenstates(graph: &Graph<SlaterDeterminant>, ctx: &DeterminantCtx) -> Option<Vec<Eigenstate>> {
     fn root(parent: &mut [usize], mut i: usize) -> usize {
         while parent[i] != i {
             parent[i] = parent[parent[i]];
@@ -273,7 +273,7 @@ pub fn eigenstates(graph: &Graph<Determinant>, ctx: &DeterminantCtx) -> Option<V
     }
 
     let n = graph.vertices.len();
-    let states: Vec<Determinant> = graph.vertices.iter().map(|v| v.instance).collect();
+    let states: Vec<SlaterDeterminant> = graph.vertices.iter().map(|v| v.instance).collect();
 
     let mut couplings = Vec::new();
     let mut parent: Vec<usize> = (0..n).collect();
@@ -348,15 +348,15 @@ pub fn ground_curve(states: &[Eigenstate], ctx: &DeterminantCtx, charge: i8) -> 
 /// edges. For blocks too big for `eigenstates`. Weights use bin `r` for every vertex, so a graph
 /// built on one bin (`stretch` off) serves them all. None without integrals.
 pub fn lowest_state(
-    graph: &Graph<Determinant>,
+    graph: &Graph<SlaterDeterminant>,
     ctx: &DeterminantCtx,
     start: usize,
     r: u8,
 ) -> Option<Eigenstate> {
-    let states: Vec<Determinant> = graph
+    let states: Vec<SlaterDeterminant> = graph
         .vertices
         .iter()
-        .map(|v| Determinant { r, ..v.instance })
+        .map(|v| SlaterDeterminant { r, ..v.instance })
         .collect();
     let n = states.len();
 
@@ -430,7 +430,7 @@ pub fn lowest_state(
 
 /// `lowest_state` per r bin: (Å, Hartree).
 pub fn lowest_curve(
-    graph: &Graph<Determinant>,
+    graph: &Graph<SlaterDeterminant>,
     ctx: &DeterminantCtx,
     start: usize,
 ) -> Vec<(f32, f64)> {
@@ -665,7 +665,7 @@ const PHASE_TURN: f64 = 65_536.;
 #[derive(Clone, Copy, Debug)]
 pub enum PacketBasis {
     Spectro(SpectroState),
-    Determinant(Determinant),
+    Determinant(SlaterDeterminant),
 }
 
 pub struct WavepacketCtx {
