@@ -5,10 +5,11 @@
 
 mod chem_graph;
 mod density_lattice;
-mod determinant;
-mod phase_cell;
+pub(crate) mod determinant;
+pub(crate) mod phase_cell;
 mod spectro_state;
 mod sto3g;
+pub(crate) mod wave_packets;
 
 use std::f64::consts::TAU;
 
@@ -203,7 +204,7 @@ pub struct Orbital {
 const BOHR_PER_ANGSTROM: f64 = 1. / 0.529_177_210_544;
 
 /// Two atoms on the z axis, `r` Å apart; bohr.
-fn diatomic(element: Element, r: f32) -> [(Element, [f64; 3]); 2] {
+pub(crate) fn diatomic(element: Element, r: f32) -> [(Element, [f64; 3]); 2] {
     [
         (element, [0.; 3]),
         (element, [0., 0., f64::from(r) * BOHR_PER_ANGSTROM]),

@@ -23,6 +23,54 @@ pub struct Graph<T: Transformable> {
 }
 
 impl<T: Transformable + Eq + Hash> Graph<T> {
+    /// Breadth-first reachable graph. The flag indicates omitted states or edges.
+    pub fn build_limited(
+        start: T,
+        ctx: &T::Context,
+        max_vertices: usize,
+        max_edges: usize,
+    ) -> (Self, bool) {
+        let mut graph = Self {
+            vertices: Vec::new(),
+            edges: Vec::new(),
+        };
+        if max_vertices == 0 {
+            return (graph, true);
+        }
+
+        let mut indices = HashMap::from([(start.clone(), graph.add_vertex(start))]);
+        let mut truncated = false;
+        let mut from = 0;
+        while from < graph.vertices.len() {
+            let state = graph.vertices[from].instance.clone();
+            for step in state.steps(ctx) {
+                let Ok(next) = state.transform(&step, ctx) else {
+                    continue;
+                };
+                if graph.edges.len() == max_edges {
+                    return (graph, true);
+                }
+
+                let to = if let Some(&to) = indices.get(&next) {
+                    to
+                } else if graph.vertices.len() < max_vertices {
+                    let to = graph.add_vertex(next.clone());
+                    indices.insert(next, to);
+
+                    to
+                } else {
+                    truncated = true;
+                    continue;
+                };
+                graph.edges.push(Edge { from, to, step });
+            }
+
+            from += 1;
+        }
+
+        (graph, truncated)
+    }
+
     /// `all` determines if we only create vertices that are connected to a starting one, or if we
     /// include all possible instances. (Warning: For instances which include non-discrete values,
     /// the latter may not be viable due to having an astounding number of values for a given field,

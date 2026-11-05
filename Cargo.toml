@@ -5,5 +5,9 @@ edition = "2024"
 
 [dependencies]
 lin_alg = "1.4.3"
+gpui = { package = "gpui-pre", version = "=0.3.10" }
+gpui_platform = { package = "gpui-pre-platform", version = "=0.3.10", features = ["font-kit", "wayland", "x11"] }
+gpui-base = "=0.8.1"
+gpui-graph = "=0.2.0"
 
 #mol_defs = { path = "../../Bio/mol_defs" }

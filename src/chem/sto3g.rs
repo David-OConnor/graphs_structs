@@ -30,15 +30,35 @@ fn exponents(element: Element) -> ([f64; 3], Option<[f64; 3]>) {
 }
 
 /// Contracted Σ c·x^l·y^m·z^n·exp(−α·|r − center|²).
-struct Ao {
+pub(super) struct Ao {
     center: [f64; 3],
     lmn: [i32; 3],
     /// (α, c); c includes normalization.
     prims: Vec<(f64, f64)>,
 }
 
+impl Ao {
+    /// Orbital amplitude at `r`, in bohr.
+    pub(super) fn value(&self, r: [f64; 3]) -> f64 {
+        let d: [f64; 3] = std::array::from_fn(|k| r[k] - self.center[k]);
+        let r2: f64 = d.iter().map(|x| x * x).sum();
+        if !r2.is_finite() {
+            return 0.;
+        }
+
+        let angular: f64 = (0..3).map(|k| d[k].powi(self.lmn[k])).product();
+
+        angular
+            * self
+                .prims
+                .iter()
+                .map(|&(a, c)| c * (-a * r2).exp())
+                .sum::<f64>()
+    }
+}
+
 /// Per atom: 1s; then 2s, 2px, 2py, 2pz past He.
-fn basis(atoms: &[(Element, [f64; 3])]) -> Vec<Ao> {
+pub(super) fn basis(atoms: &[(Element, [f64; 3])]) -> Vec<Ao> {
     let mut aos = Vec::new();
     for &(element, center) in atoms {
         let (core, valence) = exponents(element);
